@@ -2,8 +2,10 @@ import tkinter as tk
 from utils import center_window, Calculator
 from PIL import Image, ImageTk
 
+# define window
 root = tk.Tk()
 
+# window configuration
 root.title("VK_CALCULATOR")
 root.resizable(False, False)
 root.geometry(center_window(root, 350, 428))
@@ -11,12 +13,15 @@ ico = Image.open('logo.jpg')
 photo = ImageTk.PhotoImage(ico)
 root.wm_iconphoto(False, photo)
 
+# initialize calculator object
 calculator = Calculator()
 
+# configure and place expression field
 expression_field = tk.Entry(root, textvariable=calculator.equation, bg="#c4abab", font="sans 16 bold")
 expression_field.grid(columnspan=4, ipadx=54, ipady=20)
 
-button_clear = tk.Button(root, text=" clear ", fg="black", bg="#d914e3", font="sans 11 bold", width=8, height=3,
+# configure and place buttons
+button_clear = tk.Button(root, text=" C ", fg="black", bg="#d914e3", font="sans 11 bold", width=8, height=3,
                          borderwidth=5, relief="raised", command=calculator.clear)
 button_clear.grid(row=2, column=0)
 
@@ -24,8 +29,8 @@ button_percentage = tk.Button(root, text=" % ", fg="black", bg="#d914e3", font="
                               borderwidth=5, relief="raised")
 button_percentage.grid(row=2, column=1)
 
-button_power = tk.Button(root, text=" x\u00b2 ", fg="black", bg="#d914e3", font="sans 11 bold", width=8, height=3,
-                         borderwidth=5, relief="raised")
+button_power = tk.Button(root, text=" \u232b ", fg="black", bg="#d914e3", font="sans 11 bold", width=8, height=3,
+                         borderwidth=5, relief="raised", command=calculator.remove)
 button_power.grid(row=2, column=2)
 
 button_plus = tk.Button(root, text=" + ", fg="black", bg="#14e3a5", font="sans 11 bold", width=8, height=3,
@@ -96,4 +101,5 @@ button_equal = tk.Button(root, text=" = ", fg="black", bg="#1905fa", font="sans 
                          borderwidth=5, relief="raised", command=calculator.calculate)
 button_equal.grid(row=6, column=3)
 
+# run VK_CALCULATOR program
 root.mainloop()
