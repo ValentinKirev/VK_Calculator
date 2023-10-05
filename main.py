@@ -26,7 +26,7 @@ button_clear = tk.Button(root, text=" C ", fg="black", bg="#d914e3", font="sans 
 button_clear.grid(row=2, column=0)
 
 button_percentage = tk.Button(root, text=" % ", fg="black", bg="#d914e3", font="sans 11 bold", width=8, height=3,
-                              borderwidth=5, relief="raised")
+                              borderwidth=5, relief="raised", command=calculator.percentage)
 button_percentage.grid(row=2, column=1)
 
 button_power = tk.Button(root, text=" \u232b ", fg="black", bg="#d914e3", font="sans 11 bold", width=8, height=3,

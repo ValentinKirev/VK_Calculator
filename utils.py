@@ -51,14 +51,8 @@ class Calculator:
 
     # define function to change number sign e.g. from negative to positive number
     def change_sign(self):
-        entry = ""
-
-        for character in reversed(self.expression):
-            entry += character
-            if character in self.signs and character != ".":
-                break
-
-        last_entry = entry[::-1]
+        last_entry = self.__find_last_entry()
+        last_entry_length_before_change = len(last_entry)
 
         if last_entry[0] == "-":
             last_entry = "+" + last_entry[1:]
@@ -69,7 +63,7 @@ class Calculator:
         elif last_entry[0] == "*" or last_entry[0] == "/":
             last_entry = last_entry[0] + "-" + last_entry[1::]
 
-        self.expression = self.expression[:len(self.expression) - len(entry)] + last_entry
+        self.expression = self.expression[:len(self.expression) - last_entry_length_before_change] + last_entry
 
         self.set_equation()
 
@@ -94,3 +88,31 @@ class Calculator:
                 self.expression += button_text
 
         self.set_equation()
+
+    # define function that calculate percentage of last entry
+    def percentage(self):
+        last_entry = self.__find_last_entry()
+        last_entry_length_before_change = len(last_entry)
+
+        if last_entry[0] not in self.signs or len(last_entry) != 1:
+            if last_entry[0] in self.signs:
+                last_entry = last_entry[1::]
+                self.expression = self.expression[:len(self.expression) - len(last_entry)] + str(float(last_entry) / 100)
+            else:
+                self.expression = self.expression[:len(self.expression) - last_entry_length_before_change] + \
+                    str(float(last_entry) / 100)
+
+        self.set_equation()
+
+    # define function to find last entry of calculator
+    def __find_last_entry(self):
+        entry = ""
+
+        for character in reversed(self.expression):
+            entry += character
+            if character in self.signs and character != ".":
+                break
+
+        last_entry = entry[::-1]
+
+        return last_entry
