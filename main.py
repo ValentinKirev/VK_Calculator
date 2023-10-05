@@ -86,7 +86,7 @@ button_divide = tk.Button(root, text=" / ", fg="black", bg="#14e3a5", font="sans
 button_divide.grid(row=5, column=3)
 
 button_sign_change = tk.Button(root, text=" +/- ", fg="black", bg="#d914e3", font="sans 11 bold", width=8, height=3,
-                               borderwidth=5, relief="raised")
+                               borderwidth=5, relief="raised", command=calculator.change_sign)
 button_sign_change.grid(row=6, column=0)
 
 button0 = tk.Button(root, text=" 0 ", fg="black", bg="#c79e0c", font="sans 11 bold", width=8, height=3,

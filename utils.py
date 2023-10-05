@@ -49,6 +49,30 @@ class Calculator:
 
         self.set_equation()
 
+    # define function to change number sign e.g. from negative to positive number
+    def change_sign(self):
+        entry = ""
+
+        for character in reversed(self.expression):
+            entry += character
+            if character in self.signs and character != ".":
+                break
+
+        last_entry = entry[::-1]
+
+        if last_entry[0] == "-":
+            last_entry = "+" + last_entry[1:]
+        elif last_entry[0] == "+":
+            last_entry = "-" + last_entry[1:]
+        elif last_entry[0] not in self.signs:
+            last_entry = "-" + last_entry
+        elif last_entry[0] == "*" or last_entry[0] == "/":
+            last_entry = last_entry[0] + "-" + last_entry[1::]
+
+        self.expression = self.expression[:len(self.expression) - len(entry)] + last_entry
+
+        self.set_equation()
+
     # define function to add or change characters in expression field
     def press_button(self, button):
         entries = re.split(r'[-/+*]', self.expression)
