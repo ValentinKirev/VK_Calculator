@@ -57,12 +57,20 @@ class Calculator:
         last_entry = self.__find_last_entry()
         last_sign = self.__find_last_sign()
 
-        if last_sign == "-":
-            last_sign = ""
-        elif last_sign == "+" or not last_sign:
-            last_sign = "-"
-        elif last_sign == "*" or last_sign == "/":
-            last_sign = last_sign + "-"
+        try:
+            if eval(self.expression) == 0 or eval(last_entry) == 0:
+                last_sign = last_sign
+            else:
+                if last_sign == "-":
+                    last_sign = "+"
+                elif last_sign == "+" or not last_sign:
+                    last_sign = "-"
+                elif last_sign == "*" or last_sign == "/":
+                    last_sign = last_sign + "-"
+        except SyntaxError:
+            pass
+        except:
+            self.expression = "ERROR!"
 
         expression_length_without_last_entry = len(self.expression) - len(last_entry)
 
