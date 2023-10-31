@@ -9,7 +9,7 @@ root = tk.Tk()
 root.title("VK_CALCULATOR")
 root.resizable(False, False)
 root.geometry(center_window(root, 352, 428))
-ico = Image.open('logo.jpg')
+ico = Image.open('images/logo.jpg')
 photo = ImageTk.PhotoImage(ico)
 root.wm_iconphoto(False, photo)
 
