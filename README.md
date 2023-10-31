@@ -8,5 +8,5 @@ VK Calculator is a simple GUI Calculator using Tkinter in Python. It has a basic
 6. Change sign operation
 
 <p align="center">
-  <img src="![](images/VK%20Calculator.png)">
+  <img src="images/VK%20Calculator.png">
 </p>
