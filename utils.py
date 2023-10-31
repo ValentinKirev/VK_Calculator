@@ -32,7 +32,10 @@ class Calculator:
                 self.expression = str(eval(self.expression))
         except ZeroDivisionError as ex:
             self.expression = f"ERROR: {ex}"
+        except:
+            self.expression = "ERROR!"
         finally:
+            self.__check_expression_length()
             self.set_equation()
 
     # define function to clear expression field
@@ -52,67 +55,88 @@ class Calculator:
     # define function to change number sign e.g. from negative to positive number
     def change_sign(self):
         last_entry = self.__find_last_entry()
-        last_entry_length_before_change = len(last_entry)
+        last_sign = self.__find_last_sign()
 
-        if last_entry[0] == "-":
-            last_entry = "+" + last_entry[1:]
-        elif last_entry[0] == "+":
-            last_entry = "-" + last_entry[1:]
-        elif last_entry[0] not in self.signs:
-            last_entry = "-" + last_entry
-        elif last_entry[0] == "*" or last_entry[0] == "/":
-            last_entry = last_entry[0] + "-" + last_entry[1::]
+        if last_sign == "-":
+            last_sign = ""
+        elif last_sign == "+" or not last_sign:
+            last_sign = "-"
+        elif last_sign == "*" or last_sign == "/":
+            last_sign = last_sign + "-"
 
-        self.expression = self.expression[:len(self.expression) - last_entry_length_before_change] + last_entry
+        expression_length_without_last_entry = len(self.expression) - len(last_entry)
 
+        if expression_length_without_last_entry > 0:
+            self.expression = self.expression[:expression_length_without_last_entry - 1] + last_sign + last_entry
+        else:
+            self.expression = last_sign + last_entry
+
+        self.__check_expression_length()
         self.set_equation()
 
     # define function to add or change characters in expression field
     def press_button(self, button):
-        entries = re.split(r'[-/+*]', self.expression)
+        last_entry = self.__find_last_entry()
         button_text = button.cget("text").strip()
 
-        if button_text == "." and "." in entries[-1]:
-            self.expression = self.expression
-        else:
-            if len(self.expression) == 0 and button_text in self.signs \
-                    or button_text == "." and self.expression[-1] in self.signs \
-                    or button_text == "0" and len(entries[-1]) == 1 and entries[-1] == "0":
+        try:
+            if button_text == "." and "." in last_entry:
                 self.expression = self.expression
-            elif button_text != "0" and button_text not in self.signs and len(entries[-1]) == 1 and \
-                    entries[-1][-1] == "0":
-                self.expression = self.expression[:-1] + button_text
-            elif len(self.expression) > 0 and self.expression[-1] in self.signs and button_text in self.signs:
-                self.expression = self.expression[:-1] + button_text
             else:
-                self.expression += button_text
+                if len(self.expression) == 0 and button_text in self.signs \
+                        or button_text == "." and self.expression[-1] in self.signs \
+                        or button_text == "0" and last_entry == "0":
+                    self.expression = self.expression
+                elif button_text != "0" and button_text not in self.signs and last_entry == "0":
+                    self.expression = self.expression[:-1] + button_text
+                elif len(self.expression) > 0 and self.expression[-1] in self.signs and button_text in self.signs:
+                    self.expression = self.expression[:-1] + button_text
+                else:
+                    self.expression += button_text
+        except:
+            self.expression = "ERROR!"
 
+        self.__check_expression_length()
         self.set_equation()
 
     # define function that calculate percentage of last entry
     def percentage(self):
         last_entry = self.__find_last_entry()
-        last_entry_length_before_change = len(last_entry)
+        last_sign = self.__find_last_sign()
 
-        if last_entry[0] not in self.signs or len(last_entry) != 1:
-            if last_entry[0] in self.signs:
-                last_entry = last_entry[1::]
-                self.expression = self.expression[:len(self.expression) - len(last_entry)] + str(float(last_entry) / 100)
+        expression_length_without_last_entry = len(self.expression) - len(last_entry)
+
+        try:
+            if expression_length_without_last_entry > 0:
+                self.expression = self.expression[:expression_length_without_last_entry - 1] + last_sign + \
+                                  str(float(last_entry) / 100)
             else:
-                self.expression = self.expression[:len(self.expression) - last_entry_length_before_change] + \
-                    str(float(last_entry) / 100)
+                self.expression = last_sign + str(float(last_entry) / 100)
+        except:
+            self.expression = "ERROR!"
+        finally:
+            self.__check_expression_length()
+            self.set_equation()
 
-        self.set_equation()
+    # define function to find and return the index of last sign
+    def __find_last_sign_index(self):
+        return len(self.expression) - len(self.__find_last_entry()) - 1
 
-    # define function to find last entry of calculator
+    # define function to find and return the last sign
+    def __find_last_sign(self):
+        last_sign = ""
+        last_sign_index = self.__find_last_sign_index()
+
+        if last_sign_index >= 0:
+            last_sign = self.expression[last_sign_index]
+
+        return last_sign
+
+    # define function to find and return last entry of calculator
     def __find_last_entry(self):
-        entry = ""
+        return re.split(r'[-/+*]', self.expression)[-1]
 
-        for character in reversed(self.expression):
-            entry += character
-            if character in self.signs and character != ".":
-                break
-
-        last_entry = entry[::-1]
-
-        return last_entry
+    # define function to check if expression is with length above 25 characters
+    def __check_expression_length(self):
+        if len(self.expression) >= 21:
+            self.expression = "Max 20 characters allowed"

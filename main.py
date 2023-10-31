@@ -8,7 +8,7 @@ root = tk.Tk()
 # window configuration
 root.title("VK_CALCULATOR")
 root.resizable(False, False)
-root.geometry(center_window(root, 350, 428))
+root.geometry(center_window(root, 352, 428))
 ico = Image.open('logo.jpg')
 photo = ImageTk.PhotoImage(ico)
 root.wm_iconphoto(False, photo)
@@ -17,8 +17,8 @@ root.wm_iconphoto(False, photo)
 calculator = Calculator()
 
 # configure and place expression field
-expression_field = tk.Entry(root, textvariable=calculator.equation, bg="#c4abab", font="sans 16 bold")
-expression_field.grid(columnspan=4, ipadx=54, ipady=20)
+expression_field = tk.Label(root, textvariable=calculator.equation, bg="#c4abab", font="sans 20 bold", anchor="e")
+expression_field.grid(row=1, column=0, columnspan=4, sticky="nesw", ipady=14)
 
 # configure and place buttons
 button_clear = tk.Button(root, text=" C ", fg="black", bg="#d914e3", font="sans 11 bold", width=8, height=3,
