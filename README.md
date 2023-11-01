@@ -16,6 +16,6 @@ Note: The calculator support only button click insertion, IT DOESN'T support key
 To run the calculator follow these steps:
 1. In terminal use "git clone https://github.com/ValentinKirev/VK_Calculator.git" to clone the repo or download the zip-file from the github repository
 2. Open terminal in project directory
-3. In terminal use "python.exe -m pip install -r requirements.txt" to install project requirements
-4. In terminal use "python main.py" to start a calculator GUI
+3. In the terminal use "python.exe -m pip install -r requirements.txt" to install project requirements
+4. In the terminal use "python main.py" to start a calculator GUI
 5. Enjoy :)
