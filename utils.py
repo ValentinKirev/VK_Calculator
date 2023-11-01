@@ -1,5 +1,4 @@
-import re
-from tkinter import StringVar
+import tkinter as tk
 
 
 # define function to center window
@@ -13,138 +12,91 @@ def center_window(root, window_width, window_height):
     return f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}"
 
 
-# define Calculator Class
-class Calculator:
-    def __init__(self):
-        self.expression = "0"
-        self.equation = StringVar()
-        self.signs = ["+", "-", "/", "*", "."]
-        self.set_equation()
+# define function to configure and place expression field
+def display_expression_field(root, calculator):
+    expression_field = tk.Label(root, textvariable=calculator.equation, bg="#c4abab", font="sans 20 bold", anchor="e")
+    expression_field.grid(row=1, column=0, columnspan=4, sticky="nesw", ipady=14)
 
-    # define function to change expression field textvariable attribute
-    def set_equation(self):
-        self.equation.set(self.expression)
 
-    # define function to calculate result
-    def calculate(self):
-        try:
-            if self.expression[-1] not in self.signs:
-                self.expression = str(eval(self.expression))
-        except ZeroDivisionError as ex:
-            self.expression = f"ERROR: {ex}"
-        except:
-            self.expression = "ERROR!"
-        finally:
-            self.__check_expression_length()
-            self.set_equation()
+# define function to configure and place buttons
+def display_buttons(root, calculator):
+    button_clear = tk.Button(root, text=" C ", fg="black", bg="#d914e3", font="sans 11 bold", width=8, height=3,
+                             borderwidth=5, relief="raised", command=calculator.clear)
+    button_clear.grid(row=2, column=0)
 
-    # define function to clear expression field
-    def clear(self):
-        self.expression = "0"
-        self.set_equation()
+    button_percentage = tk.Button(root, text=" % ", fg="black", bg="#d914e3", font="sans 11 bold", width=8, height=3,
+                                  borderwidth=5, relief="raised", command=calculator.percentage)
+    button_percentage.grid(row=2, column=1)
 
-    # define function to remove last character from expression field
-    def remove(self):
-        self.expression = self.expression[:-1]
+    button_power = tk.Button(root, text=" \u232b ", fg="black", bg="#d914e3", font="sans 11 bold", width=8, height=3,
+                             borderwidth=5, relief="raised", command=calculator.remove)
+    button_power.grid(row=2, column=2)
 
-        if len(self.expression) == 0:
-            self.expression = "0"
+    button_plus = tk.Button(root, text=" + ", fg="black", bg="#14e3a5", font="sans 11 bold", width=8, height=3,
+                            borderwidth=5, relief="raised", command=lambda: calculator.press_button(button_plus))
+    button_plus.grid(row=2, column=3)
 
-        self.set_equation()
+    button1 = tk.Button(root, text=" 1 ", fg="black", bg="#c79e0c", font="sans 11 bold", width=8, height=3,
+                        borderwidth=5, relief="raised", command=lambda: calculator.press_button(button1))
+    button1.grid(row=3, column=0)
 
-    # define function to change number sign e.g. from negative to positive number
-    def change_sign(self):
-        last_entry = self.__find_last_entry()
-        last_sign = self.__find_last_sign()
+    button2 = tk.Button(root, text=" 2 ", fg="black", bg="#c79e0c", font="sans 11 bold", width=8, height=3,
+                        borderwidth=5, relief="raised", command=lambda: calculator.press_button(button2))
+    button2.grid(row=3, column=1)
 
-        try:
-            if eval(self.expression) == 0 or eval(last_entry) == 0:
-                last_sign = last_sign
-            else:
-                if last_sign == "-":
-                    last_sign = "+"
-                elif last_sign == "+" or not last_sign:
-                    last_sign = "-"
-                elif last_sign == "*" or last_sign == "/":
-                    last_sign = last_sign + "-"
-        except SyntaxError:
-            pass
-        except:
-            self.expression = "ERROR!"
+    button3 = tk.Button(root, text=" 3 ", fg="black", bg="#c79e0c", font="sans 11 bold", width=8, height=3,
+                        borderwidth=5, relief="raised", command=lambda: calculator.press_button(button3))
+    button3.grid(row=3, column=2)
 
-        expression_length_without_last_entry = len(self.expression) - len(last_entry)
+    button_minus = tk.Button(root, text=" - ", fg="black", bg="#14e3a5", font="sans 11 bold", width=8, height=3,
+                             borderwidth=5, relief="raised", command=lambda: calculator.press_button(button_minus))
+    button_minus.grid(row=3, column=3)
 
-        if expression_length_without_last_entry > 0:
-            self.expression = self.expression[:expression_length_without_last_entry - 1] + last_sign + last_entry
-        else:
-            self.expression = last_sign + last_entry
+    button4 = tk.Button(root, text=" 4 ", fg="black", bg="#c79e0c", font="sans 11 bold", width=8, height=3,
+                        borderwidth=5, relief="raised", command=lambda: calculator.press_button(button4))
+    button4.grid(row=4, column=0)
 
-        self.__check_expression_length()
-        self.set_equation()
+    button5 = tk.Button(root, text=" 5 ", fg="black", bg="#c79e0c", font="sans 11 bold", width=8, height=3,
+                        borderwidth=5, relief="raised", command=lambda: calculator.press_button(button5))
+    button5.grid(row=4, column=1)
 
-    # define function to add or change characters in expression field
-    def press_button(self, button):
-        last_entry = self.__find_last_entry()
-        button_text = button.cget("text").strip()
+    button6 = tk.Button(root, text=" 6 ", fg="black", bg="#c79e0c", font="sans 11 bold", width=8, height=3,
+                        borderwidth=5, relief="raised", command=lambda: calculator.press_button(button6))
+    button6.grid(row=4, column=2)
 
-        try:
-            if button_text == "." and "." in last_entry:
-                self.expression = self.expression
-            else:
-                if len(self.expression) == 0 and button_text in self.signs \
-                        or button_text == "." and self.expression[-1] in self.signs \
-                        or button_text == "0" and last_entry == "0":
-                    self.expression = self.expression
-                elif button_text != "0" and button_text not in self.signs and last_entry == "0":
-                    self.expression = self.expression[:-1] + button_text
-                elif len(self.expression) > 0 and self.expression[-1] in self.signs and button_text in self.signs:
-                    self.expression = self.expression[:-1] + button_text
-                else:
-                    self.expression += button_text
-        except:
-            self.expression = "ERROR!"
+    button_multiply = tk.Button(root, text=" * ", fg="black", bg="#14e3a5", font="sans 11 bold", width=8, height=3,
+                                borderwidth=5, relief="raised",
+                                command=lambda: calculator.press_button(button_multiply))
+    button_multiply.grid(row=4, column=3)
 
-        self.__check_expression_length()
-        self.set_equation()
+    button7 = tk.Button(root, text=" 7 ", fg="black", bg="#c79e0c", font="sans 11 bold", width=8, height=3,
+                        borderwidth=5, relief="raised", command=lambda: calculator.press_button(button7))
+    button7.grid(row=5, column=0)
 
-    # define function that calculate percentage of last entry
-    def percentage(self):
-        last_entry = self.__find_last_entry()
-        last_sign = self.__find_last_sign()
+    button8 = tk.Button(root, text=" 8 ", fg="black", bg="#c79e0c", font="sans 11 bold", width=8, height=3,
+                        borderwidth=5, relief="raised", command=lambda: calculator.press_button(button8))
+    button8.grid(row=5, column=1)
 
-        expression_length_without_last_entry = len(self.expression) - len(last_entry)
+    button9 = tk.Button(root, text=" 9 ", fg="black", bg="#c79e0c", font="sans 11 bold", width=8, height=3,
+                        borderwidth=5, relief="raised", command=lambda: calculator.press_button(button9))
+    button9.grid(row=5, column=2)
 
-        try:
-            if expression_length_without_last_entry > 0:
-                self.expression = self.expression[:expression_length_without_last_entry - 1] + last_sign + \
-                                  str(float(last_entry) / 100)
-            else:
-                self.expression = last_sign + str(float(last_entry) / 100)
-        except:
-            self.expression = "ERROR!"
-        finally:
-            self.__check_expression_length()
-            self.set_equation()
+    button_divide = tk.Button(root, text=" / ", fg="black", bg="#14e3a5", font="sans 11 bold", width=8, height=3,
+                              borderwidth=5, relief="raised", command=lambda: calculator.press_button(button_divide))
+    button_divide.grid(row=5, column=3)
 
-    # define function to find and return the index of last sign
-    def __find_last_sign_index(self):
-        return len(self.expression) - len(self.__find_last_entry()) - 1
+    button_sign_change = tk.Button(root, text=" +/- ", fg="black", bg="#d914e3", font="sans 11 bold", width=8, height=3,
+                                   borderwidth=5, relief="raised", command=calculator.change_sign)
+    button_sign_change.grid(row=6, column=0)
 
-    # define function to find and return the last sign
-    def __find_last_sign(self):
-        last_sign = ""
-        last_sign_index = self.__find_last_sign_index()
+    button0 = tk.Button(root, text=" 0 ", fg="black", bg="#c79e0c", font="sans 11 bold", width=8, height=3,
+                        borderwidth=5, relief="raised", command=lambda: calculator.press_button(button0))
+    button0.grid(row=6, column=1)
 
-        if last_sign_index >= 0:
-            last_sign = self.expression[last_sign_index]
+    button_decimal = tk.Button(root, text=" . ", fg="black", bg="#d914e3", font="sans 11 bold", width=8, height=3,
+                               borderwidth=5, relief="raised", command=lambda: calculator.press_button(button_decimal))
+    button_decimal.grid(row=6, column=2)
 
-        return last_sign
-
-    # define function to find and return last entry of calculator
-    def __find_last_entry(self):
-        return re.split(r'[-/+*]', self.expression)[-1]
-
-    # define function to check if expression is with length above 25 characters
-    def __check_expression_length(self):
-        if len(self.expression) >= 21:
-            self.expression = "Max 20 characters allowed"
+    button_equal = tk.Button(root, text=" = ", fg="black", bg="#1905fa", font="sans 11 bold", width=8, height=3,
+                             borderwidth=5, relief="raised", command=calculator.calculate)
+    button_equal.grid(row=6, column=3)
