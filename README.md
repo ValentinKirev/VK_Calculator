@@ -7,6 +7,8 @@ VK Calculator is a simple GUI Calculator using Tkinter in Python. It has a basic
 5. Percentage
 6. Change sign operation
 
+Note: The calculator support only button click insertion, IT DOESN'T support keyboard insertion!
+
 <p align="center">
   <img src="images/VK%20Calculator.png">
 </p>
